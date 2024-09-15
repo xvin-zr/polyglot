@@ -1,7 +1,10 @@
+use anyhow::{Ok, Result};
 use clap::Parser;
-use rust::opts::Opts;
+use rust::{config::Config, opts::Opts};
 
-fn main() {
-    let opts = Opts::parse();
+fn main() -> Result<()> {
+    let opts: Config = Opts::parse().try_into()?;
     println!("{:?}", opts);
+
+    return Ok(());
 }

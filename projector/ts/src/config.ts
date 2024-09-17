@@ -44,11 +44,11 @@ function getOperation(opts: ProjectorOptions): Operation {
         return Operation.Print;
     }
 
-    if (opts[0] === 'add') {
+    if (opts.args[0] === 'add') {
         return Operation.Add;
     }
 
-    if (opts[0] === 'remove') {
+    if (opts.args[0] === 'remove') {
         return Operation.Remove;
     }
 

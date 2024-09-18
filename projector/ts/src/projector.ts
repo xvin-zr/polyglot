@@ -77,6 +77,16 @@ export class Projector {
             delete dir[key];
         }
     }
+    save(): void {
+        const configPath = path.dirname(this.config.config);
+        if (fs.existsSync(configPath)) {
+            fs.mkdirSync(configPath, { recursive: true });
+        }
+        fs.writeFileSync(
+            this.config.config,
+            JSON.stringify(this.data, null, 2)
+        );
+    }
 
     static fromConfig(config: Config): Projector {
         if (fs.existsSync(config.config)) {

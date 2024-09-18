@@ -86,6 +86,23 @@ func (p *Projector) RemoveValue(key string) {
 	}
 }
 
+func (p *Projector) Save() error {
+	dir := path.Dir(p.config.Config)
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err = os.MkdirAll(dir, 0755)
+		if err != nil {
+			return err
+		}
+	}
+
+	jsonStr, err := json.Marshal(p.data)
+	if err != nil {
+		return err
+	}
+	os.WriteFile(p.config.Config, jsonStr, 0755)
+	return nil
+}
+
 func defaultProjector(config *Config) *Projector {
 	return &Projector{
 		config: config,
@@ -95,25 +112,24 @@ func defaultProjector(config *Config) *Projector {
 	}
 }
 
-func NewProjector(config *Config) *Projector {
-	if _, err := os.Stat(config.Config); err != nil {
+func NewProjector(config *Config) (*Projector, error) {
+	if _, err := os.Stat(config.Config); err == nil {
 		contents, err := os.ReadFile(config.Config)
 		if err != nil {
-			return defaultProjector(config)
+			return defaultProjector(config), err
 		}
 
 		var data Data
 		err = json.Unmarshal(contents, &data)
 		if err != nil {
-			return defaultProjector(config)
+			return defaultProjector(config), err
 		}
 
 		return &Projector{
 			data:   &data,
 			config: config,
-		}
-
+		}, nil
 	}
 
-	return defaultProjector(config)
+	return defaultProjector(config), nil
 }

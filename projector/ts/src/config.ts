@@ -8,8 +8,11 @@ export enum Operation {
 }
 
 export type Config = {
+    /** Operation args */
     args: string[];
     operation: Operation;
+
+    /** Path of config file */
     config: string;
     pwd: string;
 };
